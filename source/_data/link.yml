@@ -1,0 +1,27 @@
+- class_name: 友情链接
+  class_desc: hello world
+  link_list:
+    - name: JerryC
+      link: https://jerryc.me/
+      avatar: https://jerryc.me/image/avatar.png
+      descr: Butterfly主题大佬
+    - name: Hexo
+      link: https://hexo.io/zh-tw/
+      avatar: https://d33wubrfki0l68.cloudfront.net/6657ba50e702d84afb32fe846bed54fba1a77add/827ae/logo.svg
+      descr: 本博客所使用的blog框架
+
+- class_name: 网站
+  class_desc: 值的推荐的网站
+  link_list:
+    - name: 豆瓣
+      link: https://www.douban.com/
+      avatar: https://img3.doubanio.com/dae/accounts/resources/527f922/sns/assets/lg_main@2x.png
+      descr: 提供图书、电影、音乐的推荐网站
+    - name: Weibo
+      link: https://www.weibo.com/
+      avatar: https://i.loli.net/2020/05/14/TLJBum386vcnI1P.png
+      descr: 中國最大社交分享平台
+    - name: Twitter
+      link: https://www.zhihu.com/
+      avatar: https://i.loli.net/2020/07/13/fJ49qMZucFT2xEv.jpg
+      descr: 有问题，上知乎

@@ -96,15 +96,15 @@ index_img: https://storage.360buyimg.com/imgtools/4f326c4461-64f318e0-c03e-11ea-
 default_top_img: https://storage.360buyimg.com/imgtools/4f326c4461-64f318e0-c03e-11ea-97b8-472d62637113.png
 
 # the banner image of archive page
-archive_img: https://storage.360buyimg.com/imgtools/a6fe033498-d0b595d0-c1c9-11ea-b317-33a24b3bfb98.jpeg
+archive_img: https://storage.360buyimg.com/imgtools/971208b14f-44be54a0-c25e-11ea-b317-33a24b3bfb98.png
 
 # the banner image of tag page
 # tag page, look like https://xxxxxxxxx.com/tags/butterfly
-tag_img: https://storage.360buyimg.com/imgtools/60ee8b2498-2a98c130-c1ca-11ea-bb3e-0391fa41ca8e.jpeg
+tag_img: https://storage.360buyimg.com/imgtools/139d38e36d-44be2d90-c25e-11ea-b317-33a24b3bfb98.png
 
 # the banner image of category page
 # category page, look like https://xxxxxxxxx.com/categories/butterfly
-category_img: https://storage.360buyimg.com/imgtools/aa5b45e961-4f8dd070-c1ca-11ea-bac3-ff438abafdac.jpeg
+category_img: https://storage.360buyimg.com/imgtools/3e62fae6b3-44bd9150-c25e-11ea-b317-33a24b3bfb98.png
 
 # If you are using hexo-douban, you can configure it (如果你有使用 hexo-douban,可配置這個)
 # douban:
@@ -740,7 +740,7 @@ inject:
   head:
     # - <link rel="stylesheet" href="/xxx.css">
   bottom:
-    # - <script src="xxxx"></script>
+  - <script src="https://myhkw.cn/player/js/player.js" id="myhk" key="159463572239" m="1"></script>
 
 # CDN
 # Don't modify the following settings unless you know how they work
