@@ -12,8 +12,8 @@ menu:
   标签: /tags/ || fas fa-tags
   分类: /categories/ || fas fa-folder-open
   生活||fas fa-list:
-    - Music || /music/ || fas fa-music
-    - Movie || /movies/ || fas fa-video
+    - 书库 || /books/ || fas fa-book
+    - 电影 || /movies/ || fas fa-video
   友链: /link/ || fas fa-link
   关于: /about/ || fas fa-heart
 
@@ -24,7 +24,7 @@ highlight_theme: pale night # default / darker / pale night / light / ocean / ma
 highlight_copy: true # copy button
 highlight_lang: true # show the code language
 highlight_shrink: false # true: shrink the code blocks / false: expand the code blocks | none: expand code blocks and hide the button
-code_word_wrap: false
+code_word_wrap: true
 
 # copy settings
 # copyright: Add the copyright information after copied content (複製的內容後面加上版權信息)
@@ -107,11 +107,11 @@ tag_img: https://storage.360buyimg.com/imgtools/139d38e36d-44be2d90-c25e-11ea-b3
 category_img: https://storage.360buyimg.com/imgtools/3e62fae6b3-44bd9150-c25e-11ea-b317-33a24b3bfb98.png
 
 # If you are using hexo-douban, you can configure it (如果你有使用 hexo-douban,可配置這個)
-# douban:
-#   meta: false
-#   movies_img:
-#   books_img:
-#   games_img:
+douban:
+  meta: true
+  movies_img: https://i.loli.net/2020/07/14/NzHuUtfYjFGOS9x.jpg
+  books_img: https://i.loli.net/2020/07/14/s13YHGqCyVKUBvz.jpg
+  # games_img:
 
 cover:
   # display the cover or not (是否顯示文章封面)
@@ -124,6 +124,7 @@ cover:
   # When cover is not set, the default cover is displayed (當沒有設置cover時，默認的封面顯示)
   default_cover: 
     - https://img11.360buyimg.com/imagetools/jfs/t1/122524/21/6593/26290/5f06ea14E342ec96e/5c11396d48f6e926.jpg
+    - https://storage.360buyimg.com/imgtools/4f326c4461-64f318e0-c03e-11ea-97b8-472d62637113.png
 
 # Replace Broken Images (替換無法顯示的圖片)
 error_img:
@@ -148,7 +149,7 @@ post_meta:
 
 # wordcount (字數統計)
 wordcount:
-  enable: false
+  enable: true
   post_wordcount: true
   min2read: true
   total_wordcount: true
@@ -234,8 +235,8 @@ addtoany:
 # disqus
 # https://disqus.com/
 disqus:
-  enable: false
-  shortname:
+  enable: true
+  shortname: daisyli
   count: false # dispaly comment count in top_img
 
 # Alternative Disqus - Render comments with Disqus API
@@ -368,7 +369,7 @@ ICP:
 # --------------------------------------
 
 # Baidu Analytics
-baidu_analytics:
+baidu_analytics: 567250f2913fb7d73845d678b6264ecb
 
 # Google Analytics
 google_analytics:
@@ -453,7 +454,7 @@ tag_ui: # 留空或 index
 background:
 
 # Show the footer background image (same as top_img)
-footer_bg: false
+footer_bg: true
 
 # the position of bottom right button/default unit: px (右下角按鈕距離底部的距離/默認單位為px)
 rightside-bottom:
@@ -464,11 +465,11 @@ rightside-bottom:
 # canvas_ribbon (靜止彩帶背景)
 # See: https://github.com/hustcc/ribbon.js
 canvas_ribbon:
-  enable: false
+  enable: true
   size: 150
   alpha: 0.6
   zIndex: -1
-  click_to_change: false
+  click_to_change: true
   mobile: false
 
 # Dynamic ribbon (動態彩帶)
@@ -516,8 +517,8 @@ display_mode: light
 
 # Beautify (美化頁面顯示)
 beautify:
-  enable: false
-  field: post # site/post
+  enable: true
+  field: site # site/post
   title-prefix-icon: '\f0c1'
   title-prefix-icon-color: '#F47466'
 
@@ -559,7 +560,7 @@ subtitle:
   # 開頭不允許轉義字元，如需要，請把整個句子用雙引號包住
   # 如果關閉打字效果，subtitle只會顯示sub的第一行文字
   sub:
-    - 不忘人恩，不念人过；不思人非，不计人怨
+    - 浮世万千 吾爱有三 日月与卿
     - Stay hungry，Stay foolish.
     - Think different, Be a misfit.
     - 此生，遇到你，很好
@@ -679,6 +680,30 @@ note:
   # Offset also applied to label tag variables. This option can work with disabled note tag.
   light_bg_offset: 0
 
+  # {% note default %}
+  # default 提示塊標籤
+  # {% endnote %}
+
+  # {% note primary no-icon %}
+  # primary 提示塊標籤
+  # {% endnote %}
+
+  # {% note success %}
+  # success 提示塊標籤
+  # {% endnote %}
+
+  # {% note info %}
+  # info 提示塊標籤
+  # {% endnote %}
+
+  # {% note warning %}
+  # warning 提示塊標籤
+  # {% endnote %}
+
+  # {% note danger %}
+  # danger 提示塊標籤
+  # {% endnote %}
+
 # other
 # --------------------------------------
 
@@ -738,9 +763,9 @@ fragment_cache: true
 # 插入代码到头部 </head> 之前 和 底部 </body> 之前
 inject:
   head:
-    # - <link rel="stylesheet" href="/xxx.css">
+  - <link rel="stylesheet" type="text/css" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css">
   bottom:
-  - <script src="https://myhkw.cn/player/js/player.js" id="myhk" key="159463572239" m="1"></script>
+  - <script src="https://myhkw.cn/player/js/player.js" id="myhk" key="159463572239"></script>
 
 # CDN
 # Don't modify the following settings unless you know how they work

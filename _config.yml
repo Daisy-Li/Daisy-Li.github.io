@@ -9,11 +9,11 @@ description: 初来乍到，在此记录分享一些前端技术知识，希望�
 keywords: 博客,生活,电影,音乐
 author: Daisy Li
 language: zh-CN
-timezone:
+timezone: Asia/Shanghai
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yoursite.com
+url: https://daisy-li.github.io/
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -81,3 +81,14 @@ deploy:
   type: git
   repository: git@github.com:Daisy-Li/Daisy-Li.github.io.git
   branch: master
+
+douban:
+  user: 57617247
+  builtin: true
+  book:
+    title: '多读书，读好书，好读书'
+    quote: '点滴记录，那些年我读过的书'
+  movie:
+    title: '让电影遇见生活'
+    quote: '一千个人眼中有一千个哈姆雷特'
+  timeout: 10000 
