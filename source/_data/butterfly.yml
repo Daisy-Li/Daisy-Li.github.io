@@ -235,7 +235,7 @@ addtoany:
 # disqus
 # https://disqus.com/
 disqus:
-  enable: true
+  enable: false
   shortname: daisyli
   count: false # dispaly comment count in top_img
 
@@ -278,21 +278,21 @@ gitalk:
 # valine
 # https://valine.js.org
 valine:
-  enable: false # if you want use valine,please set this value is true
-  appId: # leancloud application app id
-  appKey: # leancloud application app key
+  enable: true # if you want use valine,please set this value is true
+  appId: geRQtsH2ueMhK48xgwNdJ0e1-gzGzoHsz # leancloud application app id
+  appKey: gfe6O9wG3PA9s0T1dDlYpmvj # leancloud application app key
   pageSize: 10 # comment list page size
-  avatar: monsterid # gravatar style https://valine.js.org/#/avatar
-  lang: en # i18n: zh-CN/zh-TW/en/ja
-  placeholder: Please leave your footprints # valine comment input placeholder(like: Please leave your footprints )
+  avatar: retro # gravatar style https://valine.js.org/#/avatar
+  lang: zh-CN # i18n: zh-CN/zh-TW/en/ja
+  placeholder:  '我的一生最美好的场景 就是遇见你...(昵称栏输入QQ，可以自动获取昵称和邮箱哦！)' # valine comment input placeholder(like: Please leave your footprints )
   guest_info: nick,mail,link #valine comment header info (nick/mail/link)
   recordIP: false # Record reviewer IP
   serverURLs: # This configuration is suitable for domestic custom domain name users, overseas version will be automatically detected (no need to manually fill in)
-  bg: # valine background
+  bg: https://i.loli.net/2020/07/15/MnW6PNoj17gxmwG.png # valine background
   emojiCDN: # emoji CDN
-  enableQQ: false # enable the Nickname box to automatically get QQ Nickname and QQ Avatar
+  enableQQ: true # enable the Nickname box to automatically get QQ Nickname and QQ Avatar
   requiredFields: nick,mail # required fields (nick/mail)
-  count: false # dispaly comment count in top_img
+  count: true # dispaly comment count in top_img
 
 # utterances
 # https://utteranc.es/
@@ -581,6 +581,7 @@ aside:
   card_announcement:
     enable: true
     content: This is my Blog
+  card_yq: true
   card_recent_post:
     enable: true
     limit: 5 # if set 0 will show all
