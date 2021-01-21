@@ -8,6 +8,10 @@
 
 创建新文章
 
+#### hexo clean
+
+清除缓存文件
+
 #### hexo generate
 
 生成静态网页
@@ -15,3 +19,7 @@
 #### hexo server
 
 启动服务器
+
+#### hexo deploy
+
+部署到 Github
