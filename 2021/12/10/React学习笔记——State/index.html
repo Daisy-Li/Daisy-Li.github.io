@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>React学习笔记——State | 萨尔茨堡的树枝</title><meta name="description" content="state到底是同步还是异步的batchUpdate 批量更新概念，以及批量更新被打破的条件。 类组件 setState1setState(obj,callback)  第一个参数：当 obj 为一个对象，则为即将合并的 state ；如果 obj 是一个函数，那么当前组件的 state 和 props 将作为参数，返回值用于合并新的 state。 第二个参数 callback ：callback"><meta name="keywords" content="react state"><meta name="author" content="Daisy Li"><meta name="copyright" content="Daisy Li"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://daisy-li.github.io/2021/12/10/React%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94State/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="React学习笔记——State"><meta property="og:url" content="https://daisy-li.github.io/2021/12/10/React%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94State/"><meta property="og:site_name" content="萨尔茨堡的树枝"><meta property="og:description" content="state到底是同步还是异步的batchUpdate 批量更新概念，以及批量更新被打破的条件。 类组件 setState1setState(obj,callback)  第一个参数：当 obj 为一个对象，则为即将合并的 state ；如果 obj 是一个函数，那么当前组件的 state 和 props 将作为参数，返回值用于合并新的 state。 第二个参数 callback ：callback"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/Daisy-Li/image-cloud/react.webp"><meta property="article:published_time" content="2021-12-10T07:00:00.000Z"><meta property="article:modified_time" content="2021-12-10T08:35:13.426Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="next" title="React学习笔记——Component" href="https://daisy-li.github.io/2021/12/09/React%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94Component/"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?567250f2913fb7d73845d678b6264ecb";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">14</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">14</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/books/"><i class="fa-fw fas fa-book"></i><span> 书库</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#state到底是同步还是异步的"><span class="toc-number">1.</span> <span class="toc-text">state到底是同步还是异步的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#类组件-setState"><span class="toc-number">2.</span> <span class="toc-text">类组件 setState</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#state更新过程"><span class="toc-number">2.1.</span> <span class="toc-text">state更新过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#类组件如何限制-state-更新视图"><span class="toc-number">2.2.</span> <span class="toc-text">类组件如何限制 state 更新视图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#setState-底层原理"><span class="toc-number">2.3.</span> <span class="toc-text">setState 底层原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#batch-update-批量更新"><span class="toc-number">2.4.</span> <span class="toc-text">batch update 批量更新</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#函数组件中的useState"><span class="toc-number">3.</span> <span class="toc-text">函数组件中的useState</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#useEffect-监听state变化"><span class="toc-number">3.1.</span> <span class="toc-text">useEffect 监听state变化</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#类组件中的-setState-和函数组件中的-useState-有什么异同"><span class="toc-number">4.</span> <span class="toc-text">类组件中的 setState 和函数组件中的 useState 有什么异同</span></a></li></ol></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/gh/Daisy-Li/image-cloud/react.webp)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">萨尔茨堡的树枝</a></span><span class="pull-right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/books/"><i class="fa-fw fas fa-book"></i><span> 书库</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">React学习笔记——State</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2021-12-10 15:00:00"><i class="far fa-calendar-alt fa-fw"></i> 发表于 2021-12-10</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2021-12-10 16:35:13"><i class="fas fa-history fa-fw"></i> 更新于 2021-12-10</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fas fa-inbox fa-fw post-meta__icon"></i><a class="post-meta__categories" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><i class="fas fa-angle-right post-meta__separator"></i><i class="fas fa-inbox fa-fw post-meta__icon"></i><a class="post-meta__categories" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/React/">React</a></span></div><div class="meta-secondline"> <span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta__icon"></i><span>字数总计:</span><span class="word-count">1.4k</span><span class="post-meta__separator">|</span><i class="far fa-clock fa-fw post-meta__icon"></i><span>阅读时长: 4 分钟</span></span></div><div class="meta-thirdline"><span class="post-meta-pv-cv"><span class="post-meta__separator">|</span><i class="far fa-eye fa-fw post-meta__icon"></i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"><span class="post-meta__separator">|</span><i class="far fa-comments fa-fw post-meta__icon"></i><span>评论数:</span><a href="/2021/12/10/React%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94State/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count comment-count" data-xid="/2021/12/10/React%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94State/" itemprop="commentCount"></span></a></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h3 id="state到底是同步还是异步的"><a href="#state到底是同步还是异步的" class="headerlink" title="state到底是同步还是异步的"></a>state到底是同步还是异步的</h3><p>batchUpdate 批量更新概念，以及批量更新被打破的条件。</p>
+<h3 id="类组件-setState"><a href="#类组件-setState" class="headerlink" title="类组件 setState"></a>类组件 setState</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setState(obj,callback)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>第一个参数：当 obj 为一个对象，则为即将合并的 state ；如果 obj 是一个函数，那么当前组件的 state 和 props 将作为参数，返回值用于合并新的 state。</li>
+<li>第二个参数 callback ：callback 为一个函数，函数执行上下文中可以获取当前 setState 更新后的最新 state 的值，可以作为依赖 state 变化的副作用函数，可以用来做一些基于 DOM 的操作。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 第一个参数为function类型 */</span> </span><br><span class="line"><span class="keyword">this</span>.setState(<span class="function">(<span class="params">state,props</span>)=&gt;</span>&#123; </span><br><span class="line">    <span class="keyword">return</span> &#123; <span class="attr">number</span>:<span class="number">1</span> &#125; </span><br><span class="line">&#125;) </span><br><span class="line"><span class="comment">/* 第一个参数为object类型 */</span> </span><br><span class="line"><span class="keyword">this</span>.setState(&#123; <span class="attr">number</span>:<span class="number">1</span> &#125;,()=&gt;&#123; </span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.state.number) <span class="comment">//获取最新的number </span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="state更新过程"><a href="#state更新过程" class="headerlink" title="state更新过程"></a>state更新过程</h4><ul>
+<li>首先 setState会先确定当前更新优先级；（flushSync 中的 setState  <strong>&gt;</strong>  正常执行上下文中 setState  <strong>&gt;</strong>  setTimeout ，Promise 中的 setState。）</li>
+<li>render阶段：react会从fiber根节点向下调和子节点，调和阶段会对比发生更新的地方，更新对比expirationTime，找到发生更新的组件，合并state，执行render函数，得到新的UI视图层；</li>
+<li>commit阶段：替换真实的Dom,然后执行setState中的回调函数。</li>
+</ul>
+<h4 id="类组件如何限制-state-更新视图"><a href="#类组件如何限制-state-更新视图" class="headerlink" title="类组件如何限制 state 更新视图"></a>类组件如何限制 state 更新视图</h4><ul>
+<li>pureComponent 可以对 state 和 props 进行浅比较，如果没有发生变化，那么组件不更新</li>
+<li>shouldComponentUpdate 生命周期可以通过判断前后 state 变化来决定组件需不需要更新，需要更新返回true，否则返回false。</li>
+</ul>
+<h4 id="setState-底层原理"><a href="#setState-底层原理" class="headerlink" title="setState 底层原理"></a>setState 底层原理</h4><p>实际上是 React 底层调用 Updater 对象上的 enqueueSetState 方法，创建一个 update ，然后放入当前 fiber 对象的待更新队列中，最后开启调度更新，进入上述讲到的更新流程。</p>
+<p>updater是一个常量对象，不能更改，由const声明。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">enqueueSetState()&#123; </span><br><span class="line">    <span class="comment">/* 每一次调用`setState`，react 都会创建一个 update 里面保存了 */</span> </span><br><span class="line">    <span class="keyword">const</span> update = createUpdate(expirationTime, suspenseConfig); </span><br><span class="line">    <span class="comment">/* callback 可以理解为 setState 回调函数，第二个参数 */</span> </span><br><span class="line">    callback &amp;&amp; (update.callback = callback) </span><br><span class="line">    <span class="comment">/* enqueueUpdate 把当前的update 传入当前fiber，待更新队列中 */</span> </span><br><span class="line">    enqueueUpdate(fiber, update); </span><br><span class="line">    <span class="comment">/* 开始调度更新 */</span> </span><br><span class="line">    scheduleUpdateOnFiber(fiber, expirationTime); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="batch-update-批量更新"><a href="#batch-update-批量更新" class="headerlink" title="batch update 批量更新"></a>batch update 批量更新</h4><p>正常 <strong>state 更新</strong>、<strong>UI 交互</strong>，都离不开用户的事件，比如点击事件，表单输入等，React 是采用事件合成的形式，每一个事件都是由 React 事件系统统一调度的，那么 State 批量更新正是和事件系统息息相关的。<br>同步代码里面会出现批量更新的情况，但是在异步操作里面的批量更新规则会被打破，比如用 promise 或者 setTimeout 包裹的代码块。</p>
+<p>React-Dom 中提供了批量更新方法 <code>unstable_batchedUpdates</code>，用于在异步环境继续开启批量更新。</p>
+<p>在实际工作中，unstable_batchedUpdates 可以用于 Ajax 数据交互之后，合并多次 setState，或者是多次 useState 。原因很简单，所有的数据交互都是在异步环境下，如果没有批量更新处理，一次数据交互多次改变 state 会促使视图多次渲染。</p>
+<h3 id="函数组件中的useState"><a href="#函数组件中的useState" class="headerlink" title="函数组件中的useState"></a>函数组件中的useState</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[ ①state , ②dispatch ] &#x3D; useState(③initData)</span><br><span class="line">const [ number , setNumber ] &#x3D; React.useState(0)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>state，目的提供给 UI ，作为渲染视图的数据源。</li>
+<li>dispatch 改变 state 的函数，可以理解为推动函数组件渲染的渲染函数。</li>
+<li>initData 有两种情况，第一种情况是非函数，将作为 state 初始化的值。 第二种情况是函数，函数的返回值作为 useState 初始化的值。</li>
+</ul>
+<p><strong>dispatch 参数是一个非函数值</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> [ number , setNumbsr ] = React.useState(<span class="number">0</span>)</span><br><span class="line"><span class="comment">/* 一个点击事件 */</span></span><br><span class="line"><span class="keyword">const</span> handleClick=<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">   setNumber(<span class="number">1</span>)</span><br><span class="line">   setNumber(<span class="number">2</span>)</span><br><span class="line">   setNumber(<span class="number">3</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>dispatch 参数是一个函数</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> [ number , setNumbsr ] = React.useState(<span class="number">0</span>)</span><br><span class="line"><span class="keyword">const</span> handleClick=<span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">   setNumber(<span class="function">(<span class="params">state</span>)=&gt;</span> state + <span class="number">1</span>)  <span class="comment">// state - &gt; 0 + 1 = 1</span></span><br><span class="line">   setNumber(<span class="number">8</span>)  <span class="comment">// state - &gt; 8</span></span><br><span class="line">   setNumber(<span class="function">(<span class="params">state</span>)=&gt;</span> state + <span class="number">1</span>)  <span class="comment">// state - &gt; 8 + 1 = 9</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="useEffect-监听state变化"><a href="#useEffect-监听state变化" class="headerlink" title="useEffect 监听state变化"></a>useEffect 监听state变化</h4><p>注意：useEffect 初始化会默认执行一次。</p>
+<p>当调用改变 state 的函数dispatch，在本次函数执行上下文中，是获取不到最新的 state 值的</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> [ number , setNumber ] = React.useState(<span class="number">0</span>) </span><br><span class="line"><span class="keyword">const</span> handleClick = <span class="function"><span class="params">()</span>=&gt;</span>&#123; </span><br><span class="line">    ReactDOM.flushSync(<span class="function"><span class="params">()</span>=&gt;</span>&#123; </span><br><span class="line">        setNumber(<span class="number">2</span>) </span><br><span class="line">        <span class="built_in">console</span>.log(number) </span><br><span class="line">    &#125;) </span><br><span class="line">    setNumber(<span class="number">1</span>) </span><br><span class="line">    <span class="built_in">console</span>.log(number) </span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span>=&gt;</span>&#123; </span><br><span class="line">        setNumber(<span class="number">3</span>) </span><br><span class="line">        <span class="built_in">console</span>.log(number) </span><br><span class="line">    &#125;) </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行结果 0 0 0</p>
+<p>原因很简单，函数组件更新就是函数的执行，在函数一次执行过程中，函数内部所有变量重新声明，所以改变的 state ，只有在下一次函数组件执行时才会被更新。所以在如上同一个函数执行上下文中，number 一直为0，无论怎么打印，都拿不到最新的 state。</p>
+<h3 id="类组件中的-setState-和函数组件中的-useState-有什么异同"><a href="#类组件中的-setState-和函数组件中的-useState-有什么异同" class="headerlink" title="类组件中的 setState 和函数组件中的 useState 有什么异同"></a>类组件中的 <code>setState</code> 和函数组件中的 <code>useState</code> 有什么异同</h3><p>相同点：</p>
+<ul>
+<li>首先从原理角度出发，setState和 useState 更新视图，底层都调用了 scheduleUpdateOnFiber 方法，而且事件驱动情况下都有批量更新规则。</li>
+</ul>
+<p>不同点：</p>
+<ul>
+<li>在不是 pureComponent 组件模式下， setState 不会浅比较两次 state 的值，只要调用 setState，在没有其他优化手段的前提下，就会执行更新。但是 useState 中的 dispatchAction 会默认比较两次 state 是否相同，然后决定是否更新组件。</li>
+<li>setState 有专门监听 state 变化的回调函数 callback，可以获取最新state；但是在函数组件中，只能通过 useEffect 来执行 state 变化引起的副作用。</li>
+<li>setState 在底层处理逻辑上主要是和老 state 进行合并处理，而 useState 更倾向于重新赋值。</li>
+</ul>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Daisy Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://daisy-li.github.io/2021/12/10/React%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94State/">https://daisy-li.github.io/2021/12/10/React%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94State/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://daisy-li.github.io" target="_blank">萨尔茨堡的树枝</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/react/">react</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/gh/Daisy-Li/image-cloud/react.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/12/09/React%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94Component/"><img class="next-cover" data-src="https://cdn.jsdelivr.net/gh/Daisy-Li/image-cloud/react.webp" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">React学习笔记——Component</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2021/12/09/React学习笔记——Component/" title="React学习笔记——Component"><img class="relatedPosts_cover" data-src="https://cdn.jsdelivr.net/gh/Daisy-Li/image-cloud/react.webp"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-09</div><div class="relatedPosts_title">React学习笔记——Component</div></div></a></div><div class="relatedPosts_item"><a href="/2021/12/08/React学习笔记——JSX编译/" title="React学习笔记——JSX编译"><img class="relatedPosts_cover" data-src="https://cdn.jsdelivr.net/gh/Daisy-Li/image-cloud/react.webp"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-08</div><div class="relatedPosts_title">React学习笔记——JSX编译</div></div></a></div><div class="relatedPosts_item"><a href="/2021/12/08/React组件中向props-children传递数据/" title="React组件中向props.children传递数据"><img class="relatedPosts_cover" data-src="https://cdn.jsdelivr.net/gh/Daisy-Li/image-cloud/meitu.jpeg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-08</div><div class="relatedPosts_title">React组件中向props.children传递数据</div></div></a></div></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="vcomment" id="vcomment"></div><script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script><script>var requestSetting = function (from,set) {
+  var from = from
+  var setting = set.split(',').filter(function(item){
+  return from.indexOf(item) > -1
+  });
+  setting = setting.length == 0 ? from :setting;
+  return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'nick,mail,link')
+var requiredFields = requestSetting(['nick','mail'],'nick,mail')
+
+window.valine = new Valine({
+  el:'#vcomment',
+  appId: 'geRQtsH2ueMhK48xgwNdJ0e1-gzGzoHsz',
+  appKey: 'gfe6O9wG3PA9s0T1dDlYpmvj',
+  placeholder: '我的一生最美好的场景 就是遇见你...(昵称栏输入QQ，可以自动获取昵称和邮箱哦！)',
+  avatar: 'retro',
+  meta: guestInfo,
+  pageSize: '10',
+  lang: 'zh-CN',
+  recordIP: false,
+  serverURLs: '',
+  emojiCDN: '',
+  emojiMaps: "",
+  enableQQ: true,
+  requiredFields: requiredFields
+});</script></div></article></main><footer id="footer" style="background-image: url(https://cdn.jsdelivr.net/gh/Daisy-Li/image-cloud/react.webp)" data-type="photo"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Daisy Li</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div><div class="footer_custom_text">Hi, welcome to my blog!</div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" title="缩小字体"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="简繁转换">繁</button><button id="darkmode" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fas fa-comments"></i></a><button class="close" id="mobile-toc-button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script defer id="ribbon" src="/js/third-party/canvas-ribbon.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script><script src="/js/third-party/click_heart.js"></script><script src="https://myhkw.cn/player/js/player.js" id="myhk" key="159463572239"></script></body></html>
